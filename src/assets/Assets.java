@@ -29,7 +29,7 @@ public class Assets
 
 	public boolean load(String assetsFolderName)
 	{
-		listFiles(assetsFolderName + "/textures/", Texture.class, "png", "jpg");
+		listFiles(assetsFolderName + "/textures/", Texture.class, "png", "jpg", "bmp");
 		listFiles(assetsFolderName + "/fonts/", Font.class, "ttf", "ttc", "otf", "otc");
 		return loaded;
 	}

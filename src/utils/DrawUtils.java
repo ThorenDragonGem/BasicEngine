@@ -1,20 +1,9 @@
 package utils;
 
-import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.ImageObserver;
-import java.awt.image.WritableRaster;
+import java.awt.image.*;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -42,8 +31,12 @@ public class DrawUtils
 		int[] pixels = new int[image.getWidth() * image.getHeight()];
 		pixels = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
 		for(int i = 0; i < image.getWidth(); i++)
+		{
 			for(int j = 0; j < image.getHeight(); j++)
-				res.setRGB(i, j, pixels[i + j * image.getWidth()]);
+			{
+				res.setRGB(i, j, pixels[i + (j * image.getWidth())]);
+			}
+		}
 		return res;
 	}
 
@@ -56,7 +49,9 @@ public class DrawUtils
 			for(int j = 0; j < image.getHeight(); j++)
 			{
 				if(image.getRGB(i, j) >= 0)
+				{
 					continue;
+				}
 				rgb = image.getRGB(i, j);
 				r = Math.max((int)(((rgb & 0x00ff0000) >> 16) * FACTOR), 0);
 				g = Math.max((int)(((rgb & 0x0000ff00) >> 8) * FACTOR), 0);
@@ -77,11 +72,13 @@ public class DrawUtils
 			for(int j = 0; j < image.getHeight(); j++)
 			{
 				if(image.getRGB(i, j) >= 0)
+				{
 					continue;
+				}
 				rgb = image.getRGB(i, j);
-				r = Math.min((int)(((rgb & 0x00ff0000) >> 16) * 1 / FACTOR), 255);
-				g = Math.min((int)(((rgb & 0x0000ff00) >> 8) * 1 / FACTOR), 255);
-				b = Math.min((int)((rgb & 0x000000ff) * 1 / FACTOR), 255);
+				r = Math.min((int)((((rgb & 0x00ff0000) >> 16) * 1) / FACTOR), 255);
+				g = Math.min((int)((((rgb & 0x0000ff00) >> 8) * 1) / FACTOR), 255);
+				b = Math.min((int)(((rgb & 0x000000ff) * 1) / FACTOR), 255);
 				Color color = new Color(r, g, b);
 				image.setRGB(i, j, color.getRGB());
 			}
@@ -97,7 +94,7 @@ public class DrawUtils
 
 	public static BufferedImage colorImage(BufferedImage image, Color color)
 	{
-		BufferedImage bufferedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TRANSLUCENT);
+		BufferedImage bufferedImage = new BufferedImage(image.getWidth(), image.getHeight(), Transparency.TRANSLUCENT);
 		Graphics2D graphics = bufferedImage.createGraphics();
 		graphics.setXORMode(color);
 		graphics.drawImage(bufferedImage, null, 0, 0);
@@ -122,7 +119,7 @@ public class DrawUtils
 	{
 		Rectangle2D stringBounds = fontMetrics.getStringBounds(str, g);
 		double x = ((parent.getWidth() - stringBounds.getWidth()) / 2);
-		double y = ((parent.getHeight() - stringBounds.getHeight()) / 2 + fontMetrics.getAscent());
+		double y = (((parent.getHeight() - stringBounds.getHeight()) / 2) + fontMetrics.getAscent());
 		return new Point((int)x, (int)y);
 	}
 
@@ -166,9 +163,15 @@ public class DrawUtils
 		BufferedImage image = copyImage(bufferedImage);
 		int rgb = new Color(r, g, b).getRGB();
 		for(int i = 0; i < image.getWidth(); i++)
-			for(int j = 0; j < image.getHeight();j ++)
+		{
+			for(int j = 0; j < image.getHeight(); j++)
+			{
 				if(image.getRGB(i, j) < 0)
+				{
 					image.setRGB(i, j, rgb);
+				}
+			}
+		}
 		return image;
 	}
 
@@ -177,9 +180,15 @@ public class DrawUtils
 		BufferedImage image = copyImage(bufferedImage);
 		int rgb = new Color(r, g, b, a).getRGB();
 		for(int i = 0; i < image.getWidth(); i++)
+		{
 			for(int j = 0; j < image.getHeight(); j++)
+			{
 				if(image.getRGB(i, j) < 0)
+				{
 					image.setRGB(i, j, rgb);
+				}
+			}
+		}
 		return image;
 	}
 
@@ -212,13 +221,23 @@ public class DrawUtils
 		{
 			for(int j = 0; j < image.getHeight(); j++)
 			{
-				if(pixels[i + j * image.getWidth()] >= 0)
+				if(pixels[i + (j * image.getWidth())] >= 0)
+				{
 					continue;
-//				int ax = image.getColorModel().getAlpha(image.getRaster().getDataElements(i, j, null));
-//				int rx = image.getColorModel().getRed(image.getRaster().getDataElements(i, j, null));
-//				int gx = image.getColorModel().getGreen(image.getRaster().getDataElements(i, j, null));
-//				int bx = image.getColorModel().getBlue(image.getRaster().getDataElements(i, j, null));
-				int rgb = pixels[i + j * image.getWidth()];
+				}
+				// int ax =
+				// image.getColorModel().getAlpha(image.getRaster().getDataElements(i,
+				// j, null));
+				// int rx =
+				// image.getColorModel().getRed(image.getRaster().getDataElements(i,
+				// j, null));
+				// int gx =
+				// image.getColorModel().getGreen(image.getRaster().getDataElements(i,
+				// j, null));
+				// int bx =
+				// image.getColorModel().getBlue(image.getRaster().getDataElements(i,
+				// j, null));
+				int rgb = pixels[i + (j * image.getWidth())];
 				int ax = ((rgb >> 24) & 0xFF);
 				int rx = ((rgb >> 16) & 0xFF);
 				int gx = ((rgb >> 8) & 0xFF);
@@ -245,5 +264,23 @@ public class DrawUtils
 			}
 		}
 		return image;
+	}
+
+	public static BufferedImage replace(BufferedImage image, Color toReplace, Color replaceColor)
+	{
+		BufferedImage res = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		for(int i = 0; i < res.getWidth(); i++)
+		{
+			for(int j = 0; j < res.getHeight(); j++)
+			{
+				if(image.getRGB(i, j) == toReplace.getRGB())
+				{
+					res.setRGB(i, j, replaceColor.getRGB());
+					continue;
+				}
+				res.setRGB(i, j, image.getRGB(i, j));
+			}
+		}
+		return res;
 	}
 }

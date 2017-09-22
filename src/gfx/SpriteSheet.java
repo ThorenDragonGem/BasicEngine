@@ -33,7 +33,7 @@ public class SpriteSheet
 
 	public BufferedImage[] cropArray(int startX, int startY, int width, int height, boolean ignoreBlanks)
 	{
-		ignoreBlanks = true;
+//		ignoreBlanks = true;
 		List<BufferedImage> list = new ArrayList<>();
 		for(int y = startY; y < sheet.getHeight(); y += height)
 		{
