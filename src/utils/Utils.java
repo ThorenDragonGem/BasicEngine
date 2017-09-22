@@ -29,14 +29,11 @@ public class Utils
 	public static BufferedImage buildImage(int width, int height, int type, BufferedImage... imagesToBuild)
 	{
 		BufferedImage res = new BufferedImage(width, height, type);
-
 		Graphics2D g = res.createGraphics();
-
 		for(BufferedImage image : imagesToBuild)
 		{
 			g.drawImage(image, 0, 0, width, height, null);
 		}
-
 		return res;
 	}
 }
