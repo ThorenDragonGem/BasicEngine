@@ -1,5 +1,6 @@
 package assets;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -11,13 +12,18 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.imgscalr.Scalr;
+import org.imgscalr.Scalr.Method;
+
+import gfx.Colors;
+import gfx.Skin2D;
 import gfx.SpriteSheet;
 import gfx.Texture;
 
 public class Assets
 {
-	public static HashMap<String, Texture> textures;
-	public static HashMap<String, Font> fonts;
+	private static HashMap<String, Texture> textures;
+	private static HashMap<String, Font> fonts;
 	private boolean loaded;
 
 	public Assets()
@@ -29,7 +35,18 @@ public class Assets
 
 	public boolean load(String assetsFolderName)
 	{
+		// add null image first just in case there is a 'null' image in textures
+		// folder to replace it;
+		BufferedImage nullImage = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
+		nullImage.setRGB(0, 0, Color.magenta.getRGB());
+		nullImage.setRGB(1, 0, Color.black.getRGB());
+		nullImage.setRGB(1, 1, Colors.magenta.getRGB());
+		nullImage.setRGB(0, 1, Color.black.getRGB());
+		nullImage = Scalr.resize(nullImage, Method.SPEED, 64, 64);
+		textures.put("null", new Texture(nullImage));
 		listFiles(assetsFolderName + "/textures/", Texture.class, "png", "jpg", "bmp");
+
+		fonts.put("defaultFont", new Font("Courier New", Font.BOLD, 20));
 		listFiles(assetsFolderName + "/fonts/", Font.class, "ttf", "ttc", "otf", "otc");
 		return loaded;
 	}
@@ -139,5 +156,23 @@ public class Assets
 			}
 		}
 		return res;
+	}
+
+	public static Skin2D getTexture(String name)
+	{
+		if(textures.containsKey(name))
+		{
+			return textures.get(name);
+		}
+		return textures.get("null");
+	}
+
+	public static Font getFont(String name)
+	{
+		if(fonts.containsKey(name))
+		{
+			return fonts.get(name);
+		}
+		return fonts.get("defaultFont");
 	}
 }
